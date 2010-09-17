@@ -25,12 +25,14 @@ module ActiveJSHelper
       File.join(SRC_DIR,'active_view/routing.js')
     ],
     :active_support_extensions => [
+      File.join(SRC_DIR,'active_support/object.js'),
       File.join(SRC_DIR,'active_support/inflector.js'),
       File.join(SRC_DIR,'active_support/date.js'),
       File.join(SRC_DIR,'active_support/json.js'),
       File.join(SRC_DIR,'active_support/callback_queue.js'),
-      File.join(SRC_DIR,'active_support/element.js'),
-      File.join(SRC_DIR,'active_support/request.js'),
+
+      # File.join(SRC_DIR,'active_support/element.js'),
+      # File.join(SRC_DIR,'active_support/request.js'),
       File.join(SRC_DIR,'active_support/initializer.js')
     ]
   }

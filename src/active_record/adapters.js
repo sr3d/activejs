@@ -9,6 +9,9 @@ var Adapters = {};
  **/
 ActiveRecord.connection = null;
 
+ActiveRecord.adapters = [];
+
+
 /**
  * ActiveRecord.connect() -> null
  * ActiveRecord.connect(url) -> null
@@ -37,29 +40,33 @@ ActiveRecord.connection = null;
  *         }
  *     });
  **/
-ActiveRecord.connect = function connect()
+ActiveRecord.connect = function connect(adapter)
 {
-    switch(arguments.length)
-    {
-        case 0:
-            ActiveRecord.connection = ActiveRecord.Adapters.InMemory.connect();
-            ActiveRecord.notify('ready');
-            break;
-        case 1:
-        case 2:
-            if((typeof(arguments[0]) == 'string' && arguments[0].match(/\{/)) || (typeof(arguments[0]) == 'object' && !ActiveSupport.Object.isArray(arguments[0])))
-            {
-                ActiveRecord.connection = ActiveRecord.Adapters.InMemory.connect(arguments[0]);
-                ActiveRecord.notify('ready');
-            }
-            else
-            {
-                ActiveRecord.connection = ActiveRecord.Adapters.InMemory.connect();
-                ActiveRecord.Adapters.REST.connect(typeof(arguments[0]) == 'string' ? [arguments[0],'GET',false] : arguments[0],arguments[1]);
-                //ready fired from within the REST adapter after Ajax request
-            }
-            break;
-    }
+  // grab from older rev @1584174
+  if(!adapter)
+  {
+      var connection = Adapters.Auto.connect.apply(Adapters.Auto, ActiveSupport.Array.from(arguments).slice(1));
+      if(connection)
+      {
+          ActiveRecord.connection = connection;
+      }
+      ActiveRecord.adapters.push(ActiveRecord.connection.constructor);
+  }
+  else
+  {
+      var connection = adapter.connect.apply(adapter, ActiveSupport.Array.from(arguments).slice(1));
+      
+      if(connection)
+      {
+          ActiveRecord.connection = connection;
+      }
+      ActiveRecord.adapters.push(adapter);
+  }
+  ActiveEvent.extend(ActiveRecord.connection);
+  if(!ActiveRecord.connection.preventConnectedNotification)
+  {
+      ActiveRecord.notify('connected');
+  }
 };
 
 /**
@@ -247,5 +254,6 @@ Adapters.InstanceMethods = {
       return '"' + name + '"';
     }
 };
+
 
 ActiveRecord.Adapters = Adapters;
