@@ -25,6 +25,7 @@ if(typeof exports != "undefined"){
 //= require <active_record/relationships/has_one>
 //= require <active_record/relationships/has_many>
 //= require <active_record/relationships/belongs_to>
+//= require <active_record/migrations>
 //= require <active_record/validations>
 
 })();

@@ -20,15 +20,9 @@ ActiveTest.Tests.Record.setup = function()
     //define Posts via SQL
     ActiveRecord.execute('CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY,user_id,title,body)');
     Post = ActiveRecord.create('posts');
-    with(Post)
-    {
-        belongsTo('user',{
-            counter: 'post_count'
-        });
-        hasMany('comments',{
-            dependent: true
-        });
-    }
+    Post.belongsTo('user',{counter: 'post_count' });
+    Post.hasMany('comments',{ dependent: true });
+
     
     //define Comments via Migrations
     Comment = ActiveRecord.create('comments',{

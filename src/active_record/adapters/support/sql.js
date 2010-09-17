@@ -2,7 +2,7 @@ Adapters.SQL = {
     schemaLess: false,
     insertEntity: function insertEntity(table, primary_key_name, data)
     {
-        var keys = ActiveSupport.keys(data).sort();
+        var keys = ActiveSupport.Object.keys(data).sort();
         var values = [];
         var args = [];
         var quoted_keys = [];
@@ -15,7 +15,7 @@ Adapters.SQL = {
         args.unshift("INSERT INTO " + table + " (" + quoted_keys.join(',') + ") VALUES (" + values.join(',') + ")");
         var response = this.executeSQL.apply(this,args);
         var id = data[primary_key_name] || this.getLastInsertedRowId();
-        var data_with_id = ActiveSupport.clone(data);
+        var data_with_id = ActiveSupport.Object.clone(data);
         data_with_id[primary_key_name] = id;
         this.notify('created',table,id,data_with_id);
         return response;
@@ -26,7 +26,7 @@ Adapters.SQL = {
         if(typeof(updates) !== 'string')
         {
             var values = [];
-            var keys = ActiveSupport.keys(updates).sort();
+            var keys = ActiveSupport.Object.keys(updates).sort();
             for (var i = 0; i < keys.length; ++i)
             {
                 args.push(updates[keys[i]]);
@@ -39,7 +39,7 @@ Adapters.SQL = {
     },
     updateEntity: function updateEntity(table, primary_key_name, id, data)
     {
-        var keys = ActiveSupport.keys(data).sort();
+        var keys = ActiveSupport.Object.keys(data).sort();
         var args = [];
         var values = [];
         for (var i = 0; i < keys.length; ++i)
@@ -160,7 +160,7 @@ Adapters.SQL = {
     buildWhereSQLFragment: function buildWhereSQLFragment(fragment, args)
     {
         var where, keys, i;
-        if(fragment && ActiveSupport.isArray(fragment))
+        if(fragment && ActiveSupport.Object.isArray(fragment))
         {
             for(i = 1; i < fragment.length; ++i)
             {
@@ -171,7 +171,7 @@ Adapters.SQL = {
         else if(fragment && typeof(fragment) !== "string")
         {
             where = '';
-            keys = ActiveSupport.keys(fragment);
+            keys = ActiveSupport.Object.keys(fragment);
             for(i = 0; i < keys.length; ++i)
             {
                 where += this.quoteIdentifier(keys[i]) + " = ? AND ";
@@ -282,7 +282,7 @@ Adapters.SQL = {
             {
                 return value;
             };
-            var t = ActiveSupport.trim(String(value));
+            var t = ActiveSupport.String.trim(String(value));
             return (t.length > 0 && !(/[^0-9.]/).test(t) && (/\.\d/).test(t)) ? parseFloat(Number(value)) : parseInt(Number(value),10);
         }
         //array or object (can come from DB (as string) or coding enviornment (object))

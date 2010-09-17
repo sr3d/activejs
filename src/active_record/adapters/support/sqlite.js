@@ -1,7 +1,7 @@
 Adapters.SQLite = ActiveSupport.Object.extend(ActiveSupport.Object.clone(Adapters.SQL),{
     createTable: function createTable(table_name,columns)
     {
-        var keys = ActiveSupport.keys(columns);
+        var keys = ActiveSupport.Object.keys(columns);
         var fragments = [];
         for (var i = 0; i < keys.length; ++i)
         {

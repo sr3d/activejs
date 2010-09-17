@@ -601,9 +601,16 @@ ActiveRecord = {
             Finders.generateFindByField(model,key);
             Finders.generateFindAllByField(model,key);
         }
-        
+                
         //setup relationship meta data container
         model.relationships = [];
+        
+        //create table for model if autoMigrate enabled        
+        if(ActiveRecord.autoMigrate)
+        {
+            Migrations.Schema.createTable(options.tableName,ActiveSupport.Object.clone(model.fields));
+        }        
+        
         
         return model;
     }
